@@ -1,24 +1,46 @@
-version: '3'
-services:  
-  mysql:    
-    image: mariadb    
-    volumes:      
-      - /data/mysql:/var/lib/mysql    
-    environment:      
-      MYSQL_ROOT_PASSWORD: mysql_root_pass      
-      MYSQL_DATABASE: db_name      
-      MYSQL_USER: user_name      
-      MYSQL_PASSWORD: user_pass    
-    restart: always  
+services:
+  wordpress:
+    build:
+      context: ./wordpress
+    container_name: "wordpress"
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: "wordpress"
+      WORDPRESS_DB_PASSWORD: "wordpress_db_password"
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - /home/ngenadie/data/mariadb:/var/www/html
+    networks:
+      - network
 
-  wordpress:    
-    image: wordpress:php7.3-fpm-alpine    
-    volumes:      
-      - /data/html:/var/www/html    
-    depends_on:      
-      - mysql    
-    environment:      
-      WORDPRESS_DB_HOST: mysql      
-      MYSQL_ROOT_PASSWORD: mysql_root_pass      
-      WORDPRESS
+  mariadb:
+    build:
+      context: ./mariadb
+    container_name: "mariadb"
+    restart: unless-stopped
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: "wordpress"
+      MYSQL_PASSWORD: "wordpress_db_password"
+    volumes:
+      - /home/ngenadie/data/mariadb:/var/lib/mysql
+    networks:
+      - network
 
+  nginx:
+    build:
+      context: ./nginx
+    container_name: "nginx"
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
