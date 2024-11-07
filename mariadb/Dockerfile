@@ -1,5 +1,6 @@
 FROM debian:bullseye
 
+RUN curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | bash
 RUN apt update
 RUN apt install -y mariadb-server
 

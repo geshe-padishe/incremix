@@ -1,11 +1,9 @@
 FROM debian:bullseye
 
 # Install dependencies
-RUN apt update && apt install -y \
-    "php7.4-fpm" \
-    wordpress \
-    curl \
-    vim
+RUN apt update && apt install -y "php7.4-fpm" wordpress \
+curl \
+vim
 COPY conf/wp.sql ~/wp.sql
 RUN cat ~/wp.sql | mysql --defaults-extra-file=/etc/mysql/debian.cnf
 # Expose ports
