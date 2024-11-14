@@ -4,10 +4,10 @@ FROM debian:bullseye
 RUN apt update && apt install -y "php7.4-fpm" wordpress \
 curl \
 vim
-COPY conf/wp.sql ~/wp.sql
-RUN cat ~/wp.sql | mysql --defaults-extra-file=/etc/mysql/debian.cnf
 # Expose ports
 EXPOSE 9000 3306
+ENV DB_NAME=niki_database
+ENV DB_PASSWORD=password
 
 # Set environment variables
 #ENV NGINX_HOSTNAME=ngenadie.42.fr

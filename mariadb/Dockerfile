@@ -6,8 +6,13 @@ RUN apt install -y mariadb-server
 
 EXPOSE 3306
 
-LABEL version="1.0"
-LABEL description="MariaDB Server"
+ENV DB_NAME=niki_database
+ENV DB_PASSWORD=password
+COPY conf/init_db.sql /tmp/init_db.sql
+RUN cat /tmp/init_db.sql | mysql --defaults-extra-file=/etc/mysql/debian.cnf
+
+#LABEL version="1.0"
+#LABEL description="MariaDB Server"
 
 HEALTHCHECK --start-period=5m \
   CMD mariadb -e 'SELECT @@datadir;' || exit 1
